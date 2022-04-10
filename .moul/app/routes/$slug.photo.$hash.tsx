@@ -3,7 +3,7 @@ import { Link, useLoaderData, useNavigate } from '@remix-run/react'
 import { useEffect, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 
-import { getDimension, isBrowser, getPhotoSrcSet, Photo } from '~/utils'
+import { getDimension, isBrowser, getPhotoSrcSet, Photo, getPhotoSrc } from '~/utils'
 import stories from '../../data/stories.json'
 
 export const loader: LoaderFunction = async ({ request, params }) => {
@@ -19,6 +19,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 			slug,
 			story,
 			title,
+			canonical: request.url
 		},
 		{
 			headers: { Link: request.url },
@@ -42,7 +43,10 @@ export const meta: MetaFunction = ({ data }) => {
 	const { name, bio, social } = data.story.profile
 	const { title: t, currentPhoto } = data
 	const title = t ? `${t} | ${name}` : name
-	const imgURL = currentPhoto && currentPhoto.bh ? `` : currentPhoto.url
+	const url = new URL(data.canonical)
+	const imgURL = currentPhoto && currentPhoto?.bh
+		? `${url.protocol}//${url.host}${getPhotoSrc(currentPhoto)}`
+		: currentPhoto.url
 
 	return {
 		title,

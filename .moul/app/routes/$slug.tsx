@@ -43,13 +43,14 @@ export const meta: MetaFunction = ({ data }) => {
 	const { title: t, cover } = data
 	const title = t ? `${t} | ${name}` : name
 	const fallback = data.story.photos.find((p: Photo) => p.order == 1)
+	const url = new URL(data.canonical)
 	const imgURL =
 		cover && cover.bh
-			? getPhotoSrc(cover)
+			? `${url.protocol}//${url.host}${getPhotoSrc(cover)}`
 			: cover && cover.url
 			? cover.url
 			: fallback && fallback.bh
-			? getPhotoSrc(fallback)
+			? `${url.protocol}//${url.host}${getPhotoSrc(fallback)}`
 			: fallback.url
 
 	return {

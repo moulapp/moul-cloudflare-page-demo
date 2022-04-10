@@ -45,8 +45,9 @@ export const headers: HeadersFunction = ({ loaderHeaders }) => {
 
 export const meta: MetaFunction = ({ data }) => {
 	const { name, bio, social, cover } = data.profile
+	const url = new URL(data.canonical)
 	const imgURL =
-		cover && cover.bh ? getPhotoSrc(cover) : cover && cover.url ? cover.url : ''
+		cover && cover.bh ? `${url.protocol}//${url.host}${getPhotoSrc(cover)}` : cover && cover.url ? cover.url : ''
 
 	return {
 		title: name,
