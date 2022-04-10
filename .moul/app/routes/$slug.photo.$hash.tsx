@@ -1,15 +1,15 @@
-import { json } from '@remix-run/cloudflare'
+import { json, LoaderFunction, HeadersFunction, MetaFunction } from '@remix-run/cloudflare'
 import { Link, useLoaderData, useNavigate } from '@remix-run/react'
 import { useEffect, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { getDimension, isBrowser, getPhotoSrcSet } from '~/utils'
 
+import { getDimension, isBrowser, getPhotoSrcSet, Photo } from '~/utils'
 import stories from '../../data/stories.json'
 
-export const loader = async ({ request, params }) => {
+export const loader: LoaderFunction = async ({ request, params }) => {
 	const { slug, hash } = params
 	const story = stories.find((story) => story.slug === slug)
-	const currentPhoto = story?.photos.find((p) => p.hash === hash)
+	const currentPhoto = story?.photos.find((p: Photo) => p.hash === hash)
 	const title = story?.blocks.find((b) => b.type === 'title')?.text
 
 	return json(
@@ -26,18 +26,19 @@ export const loader = async ({ request, params }) => {
 	)
 }
 
-export const headers = ({ loaderHeaders }) => {
+
+export const headers: HeadersFunction = ({ loaderHeaders }) => {
 	let cacheControl = loaderHeaders.get('Link')?.includes('localhost:')
 		? 'public, max-age=0, must-revalidate'
-		: 'public, max-age=1800, s-maxage=2592000, stale-while-revalidate=31540000000' // 30 mins, 30 days, 1 year
-	// : 'public, max-age=86400, s-maxage=2592000, stale-while-revalidate=31540000000' // 1 day, 30 days, 1 year
+		: 'public, max-age=86400, s-maxage=2592000, stale-while-revalidate=31540000000'
+	// 1 day, 30 days, 1 year
 	return {
 		Link: `${loaderHeaders.get('Link')}; rel="canonical"`,
 		'Cache-Control': cacheControl,
 	}
 }
 
-export const meta = ({ data }) => {
+export const meta: MetaFunction = ({ data }) => {
 	const { name, bio, social } = data.story.profile
 	const { title: t, currentPhoto } = data
 	const title = t ? `${t} | ${name}` : name
@@ -56,7 +57,7 @@ export const meta = ({ data }) => {
 }
 // https://codesandbox.io/s/framer-motion-image-gallery-pqvx3?from-embed=&file=/src/Example.tsx
 let swipeConfidenceThreshold = 10000
-let swipePower = (offset, velocity) => {
+let swipePower = (offset: number, velocity: number) => {
 	return Math.abs(offset) * velocity
 }
 
@@ -65,6 +66,8 @@ export default function Photo() {
 	let navigation = useNavigate()
 
 	let [photo, setPhoto] = useState(currentPhoto.hash)
+
+	let [hash, setHash] = useState(currentPhoto.bh)
 	let [width, setWidth] = useState(0)
 	let [height, setHeight] = useState(0)
 
@@ -74,6 +77,8 @@ export default function Photo() {
 
 	let [wrapper, setWrapper] = useState(0)
 	let [currentWidth, setCurrentWidth] = useState(0)
+	let [open, setOpen] = useState(false)
+	let [index, setIndex] = useState(0)
 	let [ui, setUi] = useState(true)
 	let [active, setActive] = useState('translateX(0)')
 	let [transition, setTransition] = useState('none')
@@ -83,7 +88,7 @@ export default function Photo() {
 			paintPhotos()
 		}
 
-		setCurrentIndex(photos.findIndex((p) => p.hash === photo))
+		setCurrentIndex(photos.findIndex((p: any) => p.hash === photo))
 		if (currentIndex > 0 && currentIndex < photos.length - 1) {
 			setNext(photos[currentIndex + 1].hash)
 			setPrev(photos[currentIndex - 1].hash)
@@ -123,8 +128,9 @@ export default function Photo() {
 		if (pn.length) {
 			let isPhoto = pn[pn.length - 2] == 'photo'
 			if (isPhoto) {
-				let pIdx = photos.findIndex((p) => p.hash === pn[pn.length - 1])
+				let pIdx = photos.findIndex((p: any) => p.hash === pn[pn.length - 1])
 				setPhoto(photos[pIdx].hash)
+				setHash(photos[pIdx].bh)
 			}
 		}
 	}
@@ -142,12 +148,14 @@ export default function Photo() {
 		setCurrentWidth(window.innerWidth)
 		setWrapper(photos.length * window.innerWidth)
 
-		const activeIndex = photos.findIndex((p) => p.hash === photo)
+		const activeIndex = photos.findIndex((p: any) => p.hash === photo)
 		// @ts-ignore
 		setActive(`translateX(-${currentWidth * activeIndex}px)`)
 
-		let photosList = document.querySelectorAll('.moul-darkbox-list picture img')
-		photosList.forEach((img) => {
+		let photosList = document.querySelectorAll(
+			'.moul-darkbox-list picture img'
+		) as any
+		photosList.forEach((img: any) => {
 			let [w, h] = img.getAttribute('data-size').split(':')
 			let { width, height } = getDimension(
 				w,
@@ -160,7 +168,7 @@ export default function Photo() {
 		})
 	}
 
-	let handleKeyup = (event) => {
+	let handleKeyup = (event: any) => {
 		if (event.key === 'ArrowRight') {
 			handleNext()
 		}
@@ -177,6 +185,7 @@ export default function Photo() {
 		setTransition('all var(--transition-photos)')
 		let photoIndex = currentIndex + 1
 		setPhoto(photos[photoIndex].hash)
+		setHash(photos[photoIndex].bh)
 
 		navigation(`/${slug}/photo/${next}`)
 	}
@@ -185,13 +194,14 @@ export default function Photo() {
 		setTransition('all var(--transition-photos)')
 		let photoIndex = currentIndex - 1
 		setPhoto(photos[photoIndex].hash)
+		setHash(photos[photoIndex].bh)
 
 		navigation(`/${slug}/photo/${prev}`)
 	}
 	let toggleUI = () => {
 		setUi(!ui)
 	}
-	let handleUiClick = (event) => {
+	let handleUiClick = (event: any) => {
 		if (event.target.className === 'moul-darkbox-list') {
 			navigation('/' + slug)
 		}
@@ -268,7 +278,7 @@ export default function Photo() {
 								<div className="moul-darkbox-inner flex h-screen">
 									{/* from here is the actual photo wrap with `min-width` */}
 									<AnimatePresence initial={false}>
-										{photos.map((p) => (
+										{photos.map((p: Photo) => (
 											<div
 												key={p.hash}
 												className="moul-darkbox-list flex justify-center items-center"

@@ -1,3 +1,4 @@
+import { LinksFunction, MetaFunction } from '@remix-run/cloudflare'
 import {
 	Links,
 	LiveReload,
@@ -8,13 +9,13 @@ import {
 } from '@remix-run/react'
 import moulStyle from '~/moul.css'
 
-export const meta = () => ({
+export const meta: MetaFunction = () => ({
 	charset: 'utf-8',
 	title: 'Moul',
 	viewport: 'width=device-width,initial-scale=1',
 })
 
-export const links = () => {
+export const links: LinksFunction = () => {
 	return [{ rel: 'stylesheet', href: moulStyle }]
 }
 

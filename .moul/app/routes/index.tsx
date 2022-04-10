@@ -1,14 +1,15 @@
-import { json } from '@remix-run/cloudflare'
+import { json, LoaderFunction, HeadersFunction, MetaFunction } from '@remix-run/cloudflare'
 import { useLoaderData } from '@remix-run/react'
 
 import { Stories } from '~/components/stories'
 import { Cover } from '~/components/cover'
 import { Profile } from '~/components/profile'
 import { getPhotoSrc } from '~/utils'
+
 import profile from '../../data/profile.json'
 import storiesJSON from '../../data/stories.json'
 
-export const loader = ({ request }) => {
+export const loader: LoaderFunction = ({ request }) => {
 	const stories = storiesJSON.map((s) => {
 		const cover = s.photos.find((p) => p.type === 'cover')
 		const title = s.blocks.find((b) => b.type === 'title')
@@ -29,10 +30,10 @@ export const loader = ({ request }) => {
 	)
 }
 
-export const headers = ({ loaderHeaders }) => {
+export const headers: HeadersFunction = ({ loaderHeaders }) => {
 	// 30 mins, 1 week, 1 year
 	// max-age=1800, s-maxage=604800, stale-while-revalidate=31540000000
-	const cacheControl = loaderHeaders.get('Link')?.includes('localhost:')
+	let cacheControl = loaderHeaders.get('Link')?.includes('localhost:')
 		? 'public, max-age=0, must-revalidate'
 		: 'public, max-age=1800, s-maxage=604800, stale-while-revalidate=31540000000'
 
@@ -42,7 +43,7 @@ export const headers = ({ loaderHeaders }) => {
 	}
 }
 
-export const meta = ({ data }) => {
+export const meta: MetaFunction = ({ data }) => {
 	const { name, bio, social, cover } = data.profile
 	const imgURL =
 		cover && cover.bh ? getPhotoSrc(cover) : cover && cover.url ? cover.url : ''

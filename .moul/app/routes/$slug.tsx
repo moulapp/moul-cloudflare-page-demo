@@ -1,13 +1,19 @@
-import { json } from '@remix-run/cloudflare'
+import { json, LoaderFunction, HeadersFunction, MetaFunction } from '@remix-run/cloudflare'
 import { Link, useLoaderData } from '@remix-run/react'
 import { useEffect } from 'react'
 import { fixed_partition } from 'image-layout'
 
 import { Profile } from '~/components/profile'
-import { getDimension, getPhotoSrc, getPhotoSrcSet, isBrowser } from '~/utils'
+import {
+	getDimension,
+	getPhotoSrc,
+	getPhotoSrcSet,
+	isBrowser,
+	Photo,
+} from '~/utils'
 import stories from '../../data/stories.json'
 
-export const loader = async ({ request }) => {
+export const loader: LoaderFunction = async ({ request }) => {
 	if (new URL(request.url).pathname === '/favicon.ico') return null
 	const slug = new URL(request.url).pathname.split('/').pop() || ''
 	const story = stories.find((s) => s.slug == slug)
@@ -20,8 +26,9 @@ export const loader = async ({ request }) => {
 	)
 }
 
-export const headers = ({ loaderHeaders }) => {
-	const cacheControl = loaderHeaders.get('Link')?.includes('localhost:')
+
+export const headers: HeadersFunction = ({ loaderHeaders }) => {
+	let cacheControl = loaderHeaders.get('Link')?.includes('localhost:')
 		? 'public, max-age=0, must-revalidate'
 		: 'public, max-age=1800, s-maxage=604800, stale-while-revalidate=31540000000'
 
@@ -31,11 +38,11 @@ export const headers = ({ loaderHeaders }) => {
 	}
 }
 
-export const meta = ({ data }) => {
+export const meta: MetaFunction = ({ data }) => {
 	const { name, bio, social } = data.story.profile
 	const { title: t, cover } = data
 	const title = t ? `${t} | ${name}` : name
-	const fallback = data.story.photos.find((p) => p.order == 1)
+	const fallback = data.story.photos.find((p: Photo) => p.order == 1)
 	const imgURL =
 		cover && cover.bh
 			? getPhotoSrc(cover)
@@ -73,11 +80,11 @@ export default function Story() {
 
 	const paintGrid = () => {
 		const grid = document.querySelectorAll('.moul-content-photos')
-		grid.forEach((el) => {
+		grid.forEach((el: any) => {
 			const photos = el.querySelectorAll('.moul-grid')
-			const photosSize = []
-			photos.forEach((photo) => {
-				const [w, h] = photo.getAttribute('data-size')?.split(':')
+			const photosSize: any = []
+			photos.forEach((photo: any) => {
+				const [w, h] = photo.getAttribute('data-size')?.split(':') as any
 				const { width, height } = getDimension(+w, +h, 2048, 2048)
 
 				photosSize.push({ width, height })
@@ -98,7 +105,7 @@ export default function Story() {
 			el.style.width = `${layout.width}px`
 			el.style.height = `${layout.height}px`
 
-			layout.positions.forEach((_, i) => {
+			layout.positions.forEach((_: any, i: number) => {
 				photos[i].style.position = `absolute`
 				photos[i].style.top = `${layout.positions[i].y}px`
 				photos[i].style.left = `${layout.positions[i].x}px`
@@ -156,41 +163,41 @@ export default function Story() {
 						<Profile profile={story.profile} />
 						{title && (
 							<div className="moul-content-title mx-auto font-bold max-w-3xl mb-6 text-neutral-900 dark:text-neutral-50 px-6 xs:px-0">
-								<h1 className="text-4xl sm:text-5xl">{title}</h1>
+								<h1 className="text-3xl md:text-5xl">{title}</h1>
 							</div>
 						)}
 					</div>
 					<div className="mx-auto">
-						{story.blocks.map((b, i) => (
+						{story.blocks.map((b: any, i: number) => (
 							<div
 								className={`mx-auto leading-relaxed moul-content-${b.type}`}
 								key={i}
 							>
 								{b.type === 'quote' && (
-									<blockquote className="px-6 xs:px-0 text-xl text-g max-w-3xl mx-auto my-12 text-neutral-800 border-neutral-800 dark:text-neutral-400 dark:border-neutral-400 border-l-4 pl-4">
+									<blockquote className="px-6 xs:px-0 text-lg md:text-xl max-w-3xl mx-auto my-8 md:my-10 text-neutral-800 border-neutral-800 dark:text-neutral-400 dark:border-neutral-400 border-l-4 pl-4">
 										{b.text}
 									</blockquote>
 								)}
 								{b.type === 'paragraph' && (
-									<p className="px-6 xs:px-0 text-xl max-w-3xl mx-auto my-12 text-neutral-700 dark:text-neutral-200">
+									<p className="px-6 xs:px-0 text-lg md:text-xl max-w-3xl mx-auto my-8 md:my-10 text-neutral-700 dark:text-neutral-200">
 										{b.text}
 									</p>
 								)}
 								{b.type === 'heading' && (
-									<h2 className="px-6 xs:px-0 text-3xl font-bold sm:text-4xl max-w-3xl mx-auto my-12 text-neutral-800 dark:text-neutral-100">
+									<h2 className="px-6 xs:px-0 text-2xl md:text-3xl font-bold sm:text-4xl max-w-3xl mx-auto my-8 md:my-10 text-neutral-800 dark:text-neutral-100">
 										{b.text}
 									</h2>
 								)}
 								{b.type === 'subheading' && (
-									<h3 className="px-6 xs:px-0 text-2xl font-bold sm:text-3xl max-w-3xl mx-auto my-12 text-neutral-800 dark:text-neutral-100">
+									<h3 className="px-6 xs:px-0 text-xl md:text-2xl font-bold sm:text-3xl max-w-3xl mx-auto my-8 md:my-10 text-neutral-800 dark:text-neutral-100">
 										{b.text}
 									</h3>
 								)}
 								{b.type === 'photos' && (
 									<div className="relative">
 										{story.photos
-											.filter((p) => p.type === b.text)
-											.map((p) => (
+											.filter((p: any) => p.type === b.text)
+											.map((p: Photo, i: number) => (
 												<Link to={`photo/${p.hash}`} key={p.hash}>
 													<picture
 														className={`moul-grid`}
