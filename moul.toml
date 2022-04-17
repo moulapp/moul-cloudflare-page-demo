@@ -1,18 +1,12 @@
-[moul]
-build = "local"
 
 [deployment]
-target = "cloudflare-pages"
+  target = "cloudflare-pages"
 
-# Profile information
 [profile]
-name = "Phearak S. Tha"
-bio = "Software Engineer • Photographer"
+  name = "Phearak S. Tha"
+  bio = "Software Engineer • Photographer"
 
-# Social media handle
 [social]
-twitter = "thasophearak"
-github = "thasophearak"
-instagram = ""
-youtube = "thasophearak"
-facebook = ""
+  twitter = "thasophearak"
+  github = "thasophearak"
+  youtube = "thasophearak"

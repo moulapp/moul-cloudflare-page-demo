@@ -1,6 +1,6 @@
-.cache
 node_modules
 package-lock.json
-build
-.moul/functions/\[\[path\]\].js
-.moul/functions/\[\[path\]\].js.map
+public/build
+public/__moul/*.json
+.moul/cache.toml
+/photos
