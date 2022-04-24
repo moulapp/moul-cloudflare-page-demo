@@ -68256,7 +68256,7 @@ function App() {
   }, /* @__PURE__ */ React.createElement("head", null, /* @__PURE__ */ React.createElement(import_react2.Meta, null), /* @__PURE__ */ React.createElement(import_react2.Links, null), /* @__PURE__ */ React.createElement("link", {
     rel: "icon",
     type: "image/svg+xml",
-    href: "/favicon.svg"
+    href: "/favicon/favicon.svg"
   })), /* @__PURE__ */ React.createElement("body", {
     className: "dark:bg-black dark:text-white bg-white text-black overflow-x-hidden"
   }, /* @__PURE__ */ React.createElement(import_react2.Outlet, null), /* @__PURE__ */ React.createElement(import_react2.ScrollRestoration, null), /* @__PURE__ */ React.createElement(import_react2.Scripts, null), /* @__PURE__ */ React.createElement(import_react2.LiveReload, null)));
@@ -68929,7 +68929,7 @@ function Index() {
 }
 
 // server-assets-manifest:@remix-run/dev/assets-manifest
-var assets_manifest_default = { "version": "1fb1c2c9", "entry": { "module": "/build/entry.client-TQYU57AU.js", "imports": ["/build/_shared/chunk-FW5UCOTS.js"] }, "routes": { "root": { "id": "root", "parentId": void 0, "path": "", "index": void 0, "caseSensitive": void 0, "module": "/build/root-SQQIDM4V.js", "imports": void 0, "hasAction": false, "hasLoader": false, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/$slug": { "id": "routes/$slug", "parentId": "root", "path": ":slug", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/$slug-VD55C5BB.js", "imports": ["/build/_shared/chunk-G6KJ5R5X.js", "/build/_shared/chunk-MOVLUFA3.js"], "hasAction": false, "hasLoader": true, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/$slug.photo.$hash": { "id": "routes/$slug.photo.$hash", "parentId": "root", "path": ":slug/photo/:hash", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/$slug.photo.$hash-YL4R6A4C.js", "imports": ["/build/_shared/chunk-MOVLUFA3.js"], "hasAction": false, "hasLoader": true, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/index": { "id": "routes/index", "parentId": "root", "path": void 0, "index": true, "caseSensitive": void 0, "module": "/build/routes/index-VHBYK452.js", "imports": ["/build/_shared/chunk-G6KJ5R5X.js", "/build/_shared/chunk-MOVLUFA3.js"], "hasAction": false, "hasLoader": true, "hasCatchBoundary": false, "hasErrorBoundary": false } }, "url": "/build/manifest-1FB1C2C9.js" };
+var assets_manifest_default = { "version": "f7fe3211", "entry": { "module": "/build/entry.client-TQYU57AU.js", "imports": ["/build/_shared/chunk-FW5UCOTS.js"] }, "routes": { "root": { "id": "root", "parentId": void 0, "path": "", "index": void 0, "caseSensitive": void 0, "module": "/build/root-XVPXO6QV.js", "imports": void 0, "hasAction": false, "hasLoader": false, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/$slug": { "id": "routes/$slug", "parentId": "root", "path": ":slug", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/$slug-VD55C5BB.js", "imports": ["/build/_shared/chunk-G6KJ5R5X.js", "/build/_shared/chunk-MOVLUFA3.js"], "hasAction": false, "hasLoader": true, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/$slug.photo.$hash": { "id": "routes/$slug.photo.$hash", "parentId": "root", "path": ":slug/photo/:hash", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/$slug.photo.$hash-YL4R6A4C.js", "imports": ["/build/_shared/chunk-MOVLUFA3.js"], "hasAction": false, "hasLoader": true, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/index": { "id": "routes/index", "parentId": "root", "path": void 0, "index": true, "caseSensitive": void 0, "module": "/build/routes/index-VHBYK452.js", "imports": ["/build/_shared/chunk-G6KJ5R5X.js", "/build/_shared/chunk-MOVLUFA3.js"], "hasAction": false, "hasLoader": true, "hasCatchBoundary": false, "hasErrorBoundary": false } }, "url": "/build/manifest-F7FE3211.js" };
 
 // server-entry-module:@remix-run/dev/server-build
 var entry = { module: entry_server_exports };
@@ -68977,6 +68977,7 @@ app.get("/favicon.ico", (req, res) => {
 app.disable("x-powered-by");
 app.use("/build", import_express.default.static("public/build", { immutable: true, maxAge: "1y" }));
 app.use(import_express.default.static(".moul/public", { maxAge: "1h" }));
+app.use(import_express.default.static("public", { maxAge: "1h" }));
 app.use((0, import_morgan.default)("tiny"));
 app.all("*", (0, import_express2.createRequestHandler)({
   build: server_build_exports,
