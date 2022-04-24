@@ -68971,9 +68971,12 @@ var routes = {
 // server.js
 var app = (0, import_express.default)();
 app.use((0, import_compression.default)());
+app.get("/favicon.ico", (req, res) => {
+  return res.end();
+});
 app.disable("x-powered-by");
 app.use("/build", import_express.default.static("public/build", { immutable: true, maxAge: "1y" }));
-app.use(import_express.default.static("public", { maxAge: "1h" }));
+app.use(import_express.default.static(".moul/public", { maxAge: "1h" }));
 app.use((0, import_morgan.default)("tiny"));
 app.all("*", (0, import_express2.createRequestHandler)({
   build: server_build_exports,
